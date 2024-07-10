@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Harshal D's Fitness Club</title>
+    <style>
+      /* Add your CSS here */
+      body {
+        font-family: Arial, sans-serif;
+      }
+      header {
+        background-color: #000;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      form {
+        margin: 20px;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+      }
+      input,
+      textarea,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+      }
+      .meal-section {
+        margin-top: 20px;
+      }
+      .meal-items {
+        margin-top: 10px;
+      }
+      .meal-item {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      #outputTable {
+        margin: 20px;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      #outputTable th,
+      #outputTable td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Harshal D's Fitness Club</h1>
+    </header>
+    <form id="clientForm" onsubmit="generateTable(event)">
+      <label for="clientName">Client Name:</label>
+      <input type="text" id="clientName" name="clientName" required />
+
+      <label for="clientWeight">Client Weight:</label>
+      <input type="number" id="clientWeight" name="clientWeight" required />
+
+      <label for="clientHeight">Client Height:</label>
+      <input type="number" id="clientHeight" name="clientHeight" required />
+
+      <label for="clientAge">Client Age:</label>
+      <input type="number" id="clientAge" name="clientAge" required />
+
+      <label for="bodyComposition">Body Composition:</label>
+      <input type="text" id="bodyComposition" name="bodyComposition" required />
+
+      <div class="meal-section" id="mealSection">
+        <h3>Items</h3>
+        <label for="mealType">Meal Type:</label>
+        <input type="text" id="mealType" name="mealType" required />
+
+        <label for="item">Item:</label>
+        <input type="text" id="item" name="item" required />
+
+        <label for="details">Details:</label>
+        <textarea id="details" name="details" required></textarea>
+
+        <button type="button" onclick="addItem()">+ Add New Item</button>
+      </div>
+
+      <button type="submit">Save and Print</button>
+    </form>
+
+    <button onclick="finalPrint()">Final Print</button>
+
+    <div id="outputTableContainer">
+      <table id="outputTable"></table>
+    </div>
+
+    <script>
+      const mealItems = [];
+
+      function addItem() {
+        const mealType = document.getElementById("mealType").value;
+        const item = document.getElementById("item").value;
+        const details = document.getElementById("details").value;
+
+        mealItems.push({ mealType, item, details });
+        displayItems();
+        clearFields();
+      }
+
+      function displayItems() {
+        const mealSection = document.getElementById("mealSection");
+        const mealItemsDiv = document.createElement("div");
+        mealItemsDiv.className = "meal-items";
+
+        mealItems.forEach((mealItem, index) => {
+          const mealItemDiv = document.createElement("div");
+          mealItemDiv.className = "meal-item";
+          mealItemDiv.innerHTML = `
+                    <label>Meal Type:</label>
+                    <input type="text" value="${mealItem.mealType}" onchange="updateItem(${index}, 'mealType', this.value)"><br>
+                    <label>Item:</label>
+                    <input type="text" value="${mealItem.item}" onchange="updateItem(${index}, 'item', this.value)"><br>
+                    <label>Details:</label>
+                    <textarea onchange="updateItem(${index}, 'details', this.value)">${mealItem.details}</textarea><br>
+                    <button type="button" onclick="removeItem(${index})">Remove</button>
+                `;
+          mealItemsDiv.appendChild(mealItemDiv);
+        });
+
+        const existingItemsDiv = document.querySelector(".meal-items");
+        if (existingItemsDiv) {
+          mealSection.replaceChild(mealItemsDiv, existingItemsDiv);
+        } else {
+          mealSection.appendChild(mealItemsDiv);
+        }
+      }
+
+      function clearFields() {
+        document.getElementById("mealType").value = "";
+        document.getElementById("item").value = "";
+        document.getElementById("details").value = "";
+      }
+
+      function removeItem(index) {
+        mealItems.splice(index, 1);
+        displayItems();
+      }
+
+      function updateItem(index, key, value) {
+        mealItems[index][key] = value;
+      }
+
+      function generateTable(event) {
+        event.preventDefault();
+
+        // Ensure the last entered item is added if not already added
+        const lastMealType = document.getElementById("mealType").value;
+        const lastItem = document.getElementById("item").value;
+        const lastDetails = document.getElementById("details").value;
+
+        if (lastMealType && lastItem && lastDetails) {
+          addItem();
+        }
+
+        const clientName = document.getElementById("clientName").value;
+        const clientWeight = document.getElementById("clientWeight").value;
+        const clientHeight = document.getElementById("clientHeight").value;
+        const clientAge = document.getElementById("clientAge").value;
+        const bodyComposition =
+          document.getElementById("bodyComposition").value;
+
+        let tableContent = `
+                <tr>
+                    <th>Client Name</th>
+                    <td contenteditable="true">${clientName}</td>
+                </tr>
+                <tr>
+                    <th>Weight</th>
+                    <td contenteditable="true">${clientWeight}</td>
+                </tr>
+                <tr>
+                    <th>Height</th>
+                    <td contenteditable="true">${clientHeight}</td>
+                </tr>
+                <tr>
+                    <th>Age</th>
+                    <td contenteditable="true">${clientAge}</td>
+                </tr>
+                <tr>
+                    <th>Body Composition</th>
+                    <td contenteditable="true">${bodyComposition}</td>
+                </tr>
+                <tr>
+                    <th>Meal Type</th>
+                    <th>Item</th>
+                    <th>Details</th>
+                </tr>
+            `;
+
+        mealItems.forEach((mealItem) => {
+          tableContent += `
+                    <tr>
+                        <td contenteditable="true">${mealItem.mealType}</td>
+                        <td contenteditable="true">${mealItem.item}</td>
+                        <td contenteditable="true">${mealItem.details}</td>
+                    </tr>
+                `;
+        });
+
+        const outputTable = document.getElementById("outputTable");
+        outputTable.innerHTML = tableContent;
+      }
+
+      function finalPrint() {
+        const clientName = document.getElementById("clientName").value;
+        const clientWeight = document.getElementById("clientWeight").value;
+        const clientHeight = document.getElementById("clientHeight").value;
+        const clientAge = document.getElementById("clientAge").value;
+        const bodyComposition =
+          document.getElementById("bodyComposition").value;
+
+        let printContent = `
+                <h1>Harshal D's Fitness Club</h1>
+                <table border="1">
+                    <tr>
+                        <th>Client Name</th>
+                        <td>${clientName}</td>
+                    </tr>
+                    <tr>
+                        <th>Weight</th>
+                        <td>${clientWeight}</td>
+                    </tr>
+                    <tr>
+                        <th>Height</th>
+                        <td>${clientHeight}</td>
+                    </tr>
+                    <tr>
+                        <th>Age</th>
+                        <td>${clientAge}</td>
+                    </tr>
+                    <tr>
+                        <th>Body Composition</th>
+                        <td>${bodyComposition}</td>
+                    </tr>
+                    <tr>
+                        <th>Meal Type</th>
+                        <th>Item</th>
+                        <th>Details</th>
+                    </tr>
+            `;
+
+        mealItems.forEach((mealItem) => {
+          printContent += `
+                    <tr>
+                        <td>${mealItem.mealType}</td>
+                        <td>${mealItem.item}</td>
+                        <td>${mealItem.details}</td>
+                    </tr>
+                `;
+        });
+
+        printContent += "</table>";
+        const printWindow = window.open("", "", "height=400,width=800");
+        printWindow.document.write("<html><head><title>Print</title>");
+        printWindow.document.write("</head><body>");
+        printWindow.document.write(printContent);
+        printWindow.document.write("</body></html>");
+        printWindow.document.close();
+        printWindow.print();
+      }
+    </script>
+  </body>
+</html>
