@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Harshal D's Fitness Club</title>
     <style>
-      /* Add your CSS here */
       body {
         font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
       header {
         background-color: #000;
@@ -22,11 +26,11 @@
       }
       input,
       textarea,
-      select,
       button {
         width: 100%;
         padding: 10px;
         margin-top: 5px;
+        box-sizing: border-box;
       }
       .meal-section {
         margin-top: 20px;
@@ -49,6 +53,29 @@
         border: 1px solid #ccc;
         padding: 10px;
         text-align: left;
+      }
+      button {
+        cursor: pointer;
+      }
+      /* Responsive Design */
+      @media (max-width: 600px) {
+        header {
+          font-size: 1.2em;
+          padding: 15px;
+        }
+        input,
+        textarea,
+        button {
+          font-size: 1em;
+          padding: 8px;
+        }
+        .meal-item {
+          padding: 8px;
+        }
+        button {
+          font-size: 1em;
+          padding: 10px;
+        }
       }
     </style>
   </head>
